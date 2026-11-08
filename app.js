@@ -16,7 +16,7 @@ function nice(m){m=Math.max(m,1);var e=Math.pow(10,Math.floor(Math.log10(m))),f=
 /* ---------- Estado ---------- */
 function defaults(){
   return {
-    v:1,ejemplo:false,copia:'',alc:70,hor:{},agenda:[],ideas:[],
+    v:1,ejemplo:false,visto:false,copia:'',alc:70,hor:{},agenda:[],ideas:[],
     marca:{
       pilares:[{n:'Web',v:2},{n:'Proyectos',v:1},{n:'LinkedIn',v:2},{n:'CV',v:2},{n:'Inglés',v:1},{n:'Red',v:2}],
       tareas:[
@@ -214,9 +214,44 @@ function cardMarca(link,extra){
 /* ---------- Piezas ---------- */
 function inp(label,path,val,type,extra){var nb=type==='number',vv=nb&&(val===0||val==='0'||val===''||val==null||num(val)===0)?'':val;return '<label class="f"><span>'+label+'</span><input data-bind="'+path+'" type="'+(type||'text')+'" value="'+esc(vv)+'"'+(nb?' inputmode="decimal" step="any" placeholder="0"':'')+' '+(extra||'')+'></label>'}
 function kpi(l,v,s,tone){return '<div class="kpi"><div class="l">'+l+'</div><div class="v '+(tone||'')+'">'+v+'</div><div class="s">'+s+'</div></div>'}
+function ejemplos(){
+  var X=function(o){o.ex=true;return o},hoy=iso(TODAY),dd=function(n){return sumaDias(n)};
+  var ag=[X({t:'Llamar al médico para pedir cita',f:dd(0),h:'',tent:false,imp:true,ok:false}),
+    X({t:'Hacer la compra',f:dd(0),h:'18:30',tent:false,imp:false,ok:false}),
+    X({t:'Tarea de ejemplo: tócala para marcarla como hecha',f:dd(0),h:'',tent:false,imp:false,ok:false}),
+    X({t:'Comprar un regalo de cumpleaños',f:dd(1),h:'',tent:false,imp:false,ok:false}),
+    X({t:'Cena con amigos',f:dd(2),h:'21:00',tent:false,imp:false,ok:false}),
+    X({t:'Revisar las facturas del mes',f:dd(3),h:'',tent:false,imp:false,ok:false}),
+    X({t:'Salir al campo (plan tentativo)',f:dd(5),h:'',tent:true,imp:false,ok:false}),
+    X({t:'Renovar el DNI (cita importante)',f:dd(9),h:'10:00',tent:false,imp:true,ok:false})];
+  var id=[X({t:'Cocinar un plato nuevo cada semana',f:hoy}),X({t:'Escapada de fin de semana a una ciudad cercana',f:hoy}),
+    X({t:'Montar un rincón de lectura en casa',f:hoy}),X({t:'Idea de ejemplo: usa «Pasar a…» para convertirla en tarea',f:hoy})];
+  var tr=[X({t:'Enviar el informe semanal',f:dd(0),h:'11:00',ok:false}),X({t:'Llamar al proveedor',f:dd(1),h:'',ok:false}),
+    X({t:'Preparar la reunión del lunes',f:dd(4),h:'',ok:false}),X({t:'Ordenar los archivos del equipo (sin fecha)',f:'',h:'',ok:false})];
+  var me=[X({t:'Ahorrar para unas vacaciones',h:'3m',ok:false}),X({t:'Organizar mi horario cada semana',h:'3m',ok:false}),
+    X({t:'Hacer ejercicio tres días por semana',h:'3m',ok:false}),X({t:'Aprender inglés',h:'12m',ok:false}),X({t:'Crear un fondo de emergencia',h:'12m',ok:false})];
+  var hor={},ks=[],i,d,k,w;
+  for(i=0;i<60;i++){d=new Date(TODAY.getFullYear(),TODAY.getMonth(),1+i);
+    if(d>new Date(TODAY.getFullYear(),TODAY.getMonth()+2,0))break;
+    k=iso(d);w=d.getDay();hor[k]=w===0?'X':w===6?'L':(Math.floor((d.getDate()-1)/7)%2?'14-22':'10-18');ks.push(k)}
+  var ym=ymHoy(),pm=iso(new Date(TODAY.getFullYear(),TODAY.getMonth()-1,1)).slice(0,7),mk=function(n){return {i:[{n:'Nómina',m:1300+n}],g:[{n:'Alquiler',m:450,t:'fijo'},{n:'Comida y básicos',m:300,t:'fijo'},{n:'Transporte',m:60,t:'fijo'},{n:'Ocio',m:80,t:'fijo'},{n:'Ropa',m:40,t:'pun'}]}},fm={};
+  fm[pm]=mk(0);fm[ym]=mk(0);
+  return {ag:ag,id:id,tr:tr,me:me,hor:hor,ks:ks,fm:fm,
+    vi:[{d:'Escapada de fin de semana',f:dd(25),f2:dd(27),c:300,a:100,ex:true},{d:'Vacaciones de verano',f:dd(240),f2:dd(247),c:1500,a:200,ex:true}],
+    de:[{n:'Tarjeta (ejemplo)',saldo:800,tae:18,cuota:80,ex:true}]};
+}
+function cargaEj(){var e=ejemplos();
+  S.agenda=S.agenda.concat(e.ag);S.ideas=S.ideas.concat(e.id);S.trabajo=S.trabajo.concat(e.tr);S.metas=S.metas.concat(e.me);
+  e.ks.forEach(function(k){if(!S.hor[k])S.hor[k]=e.hor[k]});S.horEx=e.ks;
+  S.viajes=S.viajes.concat(e.vi);S.deudas=S.deudas.concat(e.de);S.fmEx=[];Object.keys(e.fm).forEach(function(k){if(!S.fm[k]){S.fm[k]=e.fm[k];S.fmEx.push(k)}});
+  S.fin.ahorro=S.fin.ahorro||1000;S.ejemplo=true;S.visto=true}
+function vacio(){return !S.agenda.length&&!S.ideas.length&&!S.trabajo.length&&!S.metas.length&&!S.viajes.length&&!S.deudas.length&&!Object.keys(S.hor).length}
+function bienv(){
+  if(S.visto||!vacio())return '';
+  return '<section class="card"><h2 class="ttl">Bienvenido a Mi espacio</h2><p class="note" style="margin-top:0">Está todo vacío. Si quieres ver cómo se rellena, carga unos ejemplos: tareas, ideas, notas de trabajo, horario, objetivos, dinero y viajes. Luego los cambias por los tuyos, o los borras todos con un botón.</p><div class="chips" style="margin-top:.8rem"><button type="button" class="btn pri" data-act="ej-load">Cargar ejemplos</button><button type="button" class="btn" data-act="ej-skip">Empezar en blanco</button></div></section>'}
 function banner(){
   if(!S.ejemplo)return '';
-  return '<div class="banner"><span>Hay datos de ejemplo en Dinero, Viajes y en la valoración de marca. Sustitúyelos por los tuyos o bórralos.</span><button class="btn pri" data-act="clear-ej">Borrar ejemplos</button></div>';
+  return '<div class="banner"><span>Hay datos de ejemplo (tareas, ideas, trabajo, horario, objetivos, dinero y viajes). Cámbialos por los tuyos o bórralos todos.</span><button class="btn pri" data-act="clear-ej">Borrar ejemplos</button></div>';
 }
 
 /* ---------- Vistas ---------- */
@@ -358,7 +393,7 @@ function vResumen(){
   var nw=S.trabajo.filter(function(x){return !x.ok}).length,bub=[['t','Tareas',nt,'t'],['i','Ideas',ni,'i'],['w','Trabajo',nw,'w']].map(function(b){return '<button type="button" class="bubl b-'+b[3]+(pOpen===b[0]?' on':'')+'" data-act="res-pend" data-k="'+b[0]+'" aria-expanded="'+(pOpen===b[0]?'true':'false')+'"><b>'+b[2]+'</b><span>'+b[1]+'</span></button>'}).join('');
   var na=avisosLista().length,pd=pOpen==='t'?cardTareas():pOpen==='i'?cardIdeas(true):pOpen==='w'?cardWork():pOpen==='a'?cardAtencion():'';
   var abtn='<button type="button" class="atenb'+(pOpen==='a'?' on':'')+'" data-act="res-pend" data-k="a" aria-expanded="'+(pOpen==='a'?'true':'false')+'"><b>'+na+'</b><span>Requiere atención</span><i class="chv" aria-hidden="true"></i></button>';
-  var out=banner()+cardHoy()+'<section class="blk b-aten"><h2 class="blkt">Pendiente global<small>Toca un pendiente para ver</small></h2><div class="bubs">'+bub+'</div>'+abtn+(pd?'<div class="pdet">'+pd+'</div>':'')+'</section>';
+  var out=bienv()+banner()+cardHoy()+'<section class="blk b-aten"><h2 class="blkt">Pendiente global<small>Toca un pendiente para ver</small></h2><div class="bubs">'+bub+'</div>'+abtn+(pd?'<div class="pdet">'+pd+'</div>':'')+'</section>';
   var dm=(ing<=0&&g+c.cuotas<=0)?{v:'Sin datos',s:'añade ingresos'}:{v:eur(Math.abs(c.libre)),s:c.libre>=0?'te sobran al mes':'te faltan al mes'};
   var dg=donutSVG([{v:g,c:'var(--turq)'},{v:c.cuotas,c:'var(--oro)'},{v:Math.max(0,c.libre),c:'var(--ok)'}]);
   var pct=m.tot?Math.round(100*m.ok/m.tot):0;
@@ -981,9 +1016,11 @@ main.addEventListener('click',function(e){
   }
   else if(a==='export'){exportar();return}
   else if(a==='clear-ej'){
-    S.ejemplo=false;S.fin={ingresos:0,extra:0,gastos:0,ahorro:0,meses:S.fin.meses||6};S.fm={};S.deudas=[];S.viajes=[];S.eng.log={};S.ideas=S.ideas.filter(function(x){return !x.ex});S.agenda=S.agenda.filter(function(x){return !x.ex});
+    S.ejemplo=false;if(S.fmEx){S.fin.ahorro=0;(S.fmEx||[]).forEach(function(k){delete S.fm[k]});S.fmEx=[];S.deudas=S.deudas.filter(function(x){return !x.ex});S.viajes=S.viajes.filter(function(x){return !x.ex})}else{S.fin={ingresos:0,extra:0,gastos:0,ahorro:0,meses:S.fin.meses||6};S.fm={};S.deudas=[];S.viajes=[]}S.eng.log={};S.ideas=S.ideas.filter(function(x){return !x.ex});S.agenda=S.agenda.filter(function(x){return !x.ex});S.trabajo=S.trabajo.filter(function(x){return !x.ex});S.metas=S.metas.filter(function(x){return !x.ex});(S.horEx||[]).forEach(function(k){delete S.hor[k]});S.horEx=[];S.visto=true;
     S.marca.pilares.forEach(function(p){p.v=0});
   }
+  else if(a==='ej-load'){cargaEj()}
+  else if(a==='ej-skip'){S.visto=true}
   else return;
   save();render();
 });
