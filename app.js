@@ -596,6 +596,7 @@ var ICO={
  hor:SV+'<rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/><rect x="8" y="12.5" width="8" height="5.5" rx="1"/><path d="M10.5 12.5v-1h3v1"/></svg>'
 };
 var carSel=null,carAnim=false,marcaOpen=false;
+function centrar(el){var t=el&&(el.closest&&el.closest('.solo')||el);if(!t)return;var h=t.getBoundingClientRect().height;t.scrollIntoView({block:h<window.innerHeight-110?'center':'start'})}
 function carrusel(pend){
   var nwk=S.trabajo.filter(function(x){return !x.ok}).length;
   var c=function(k,ic,t,sub){return '<button type="button" class="cc'+(carSel===k?' on':'')+'" data-act="car" data-k="'+k+'" aria-pressed="'+(carSel===k)+'">'+ic+'<b>'+t+'</b><small>'+sub+'</small></button>'};
@@ -848,7 +849,7 @@ function vHorarioP(){
   }
   var leyenda='<div class="leyenda"><span><i class="lt"></i>Turno</span><span><i class="lv"></i>Vacaciones</span><span><i class="lj"></i>Viaje</span><span><svg class="lst" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 2.8l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.6 6.4 19.8l1.3-6.2L3 9.3l6.3-.7z" fill="#D6AD55" stroke="#fff" stroke-width="1" stroke-linejoin="round"/></svg>Importante</span><span><i class="lr"></i>Tarea</span><span><i class="lw"></i>Trabajo</span><span><svg class="lst" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="#D64545" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/></svg>Cita</span></div>';
   var resto=sinH||'';
-  ed='';return {msg:msg,cal:'<details class="card fold'+(tlOpen?' tlo':'')+'" id="a-cal" data-fold="cal"'+(foldOpen.cal?' open':'')+'><summary><span class="ttl" style="margin:0">Calendario</span>'+(tlOpen?'<button type="button" class="calbtn" data-act="tl-close" aria-label="Volver al calendario" title="Calendario"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>':'')+tlBtn('tlcal')+'</summary><div style="margin-top:1rem">'+cal+(tlOpen?'':leyenda)+'</div></details>',ed:ed,resto:resto,imp:hImportar('')};
+  ed='';return {msg:msg,cal:'<details class="card fold'+(tlOpen?' tlo':'')+'" id="a-cal" data-fold="cal"'+(foldOpen.cal?' open':'')+'><summary><span class="ttl" style="margin:0">Calendario</span>'+(tlOpen?'<button type="button" class="calbtn" data-act="tl-close" aria-label="Volver al calendario" title="Calendario"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button>':'')+tlBtn('tlcal')+'</summary><div style="margin-top:1rem">'+cal+(tlOpen?'':leyenda+'<div class="calfoot"><button type="button" class="btn" data-act="hor-go">Cambiar horario</button></div>')+'</div></details>',ed:ed,resto:resto,imp:hImportar('')};
 }
 var hFormD=null,hFormMsg='',hImpOpen=false;
 function normHoras(t){
@@ -953,7 +954,8 @@ main.addEventListener('click',function(e){
   else if(a==='vj-mas'){vjShown+=3}
   else if(a==='vj-menos'){vjShown=3}
   else if(a==='t-fil'){tFil=tFil===t.dataset.k?null:t.dataset.k;tFilAnim=!!tFil;render();return}
-  else if(a==='car'){var kk=t.dataset.k,cr=document.querySelector('.car'),sl=cr?cr.scrollLeft:0;carSel=carSel===kk?null:kk;carAnim=!!carSel;render();var cr2=document.querySelector('.car');if(cr2)cr2.scrollLeft=sl;return}
+  else if(a==='car'){var kk=t.dataset.k,cr=document.querySelector('.car'),sl=cr?cr.scrollLeft:0;carSel=carSel===kk?null:kk;carAnim=!!carSel;render();var cr2=document.querySelector('.car');if(cr2)cr2.scrollLeft=sl;if(carSel)setTimeout(function(){centrar(document.querySelector('.solo'))},30);return}
+  else if(a==='hor-go'){hImpOpen=true;carSel='imp';carAnim=true;hFormD=null;hFormMsg='';if(location.hash==='#tareas/imp')window.dispatchEvent(new Event('hashchange'));else location.hash='#tareas/imp';return}
   else if(a==='zero'){delete S.eng.log[t.dataset.key]}
   else if(a==='clear-eng'){
     if(!armed){armed=true;t.textContent='Pulsa otra vez para borrar todo';return}
@@ -1128,7 +1130,7 @@ window.addEventListener('hashchange',function(){
   if(an==='deudas')foldOpen.fd=true;if(an==='mt'){foldOpen.mt=true;carSel='mt'}if(an==='id'){foldOpen.id=true;carSel='id'}if(an==='cal')foldOpen.cal=true;if(an==='imp'){hImpOpen=true;carSel='imp'}window._calHome=(an==='cal');if(an==='marca')foldOpen.mc=true;
   render();
   var el=an&&document.getElementById('a-'+an);
-  if(el){setTimeout(function(){el.scrollIntoView({block:'start'});window._calY=null;setTimeout(function(){window._calY=window.pageYOffset},1000);setTimeout(function(){window._calHome=false;var q=document.querySelectorAll('.calhome.on');for(var z=0;z<q.length;z++)q[z].classList.remove('on')},20000);el.classList.add('flash');setTimeout(function(){el.classList.remove('flash')},1600)},40)}
+  if(el){setTimeout(function(){if(an==='mt'||an==='id'||an==='imp')centrar(el);else el.scrollIntoView({block:'start'});window._calY=null;setTimeout(function(){window._calY=window.pageYOffset},1000);setTimeout(function(){window._calHome=false;var q=document.querySelectorAll('.calhome.on');for(var z=0;z<q.length;z++)q[z].classList.remove('on')},20000);el.classList.add('flash');setTimeout(function(){el.classList.remove('flash')},1600)},40)}
   else window.scrollTo(0,0)});
 
 /* ---------- Inicio ---------- */

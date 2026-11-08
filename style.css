@@ -1182,3 +1182,6 @@ body{padding-bottom:3.5rem}
 .blkt small{white-space:normal;text-align:right;min-width:0}
 /* v201 logo */
 img.mono{border:0;border-radius:0;object-fit:contain;display:block;background:none}
+
+/* v206 botón cambiar horario */
+.calfoot{display:flex;justify-content:flex-end;margin-top:.9rem}
