@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Mi espacio: resumen personal con agenda, objetivos, finanzas y viajes.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#172D43">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mi espacio">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Mi espacio</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <svg class="deco" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="95"/><circle cx="100" cy="100" r="75"/><circle cx="100" cy="100" r="55"/><circle cx="100" cy="100" r="35"/><circle cx="100" cy="100" r="15"/></svg>
+  <div class="in">
+    <div class="brand">
+      <div class="mono" aria-hidden="true">JO</div>
+      <div><h1>Mi espacio</h1><p>Mi resumen personal</p><div class="nbs"><button type="button" class="nbtn" id="nb_idea"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg> Idea</button><button type="button" class="nbtn" id="nb_tarea"><span aria-hidden="true">+</span> Tarea</button></div></div>
+      <div class="fecha"><b id="hoy"></b><span id="estado"></span></div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
+  </div>
+</header>
+<div class="in"><main id="main"></main><p class="foot" id="foot"></p></div>
+<div class="fabs"><button id="fab_idea" class="fb fi" type="button" aria-label="Nueva idea"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></button><button id="fab" class="fb" type="button" aria-label="Nueva tarea">+</button></div>
+<div id="sheet" class="sheet" hidden></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<noscript><p style="padding:1rem">Mi espacio necesita JavaScript para funcionar.</p></noscript>
+<script src="app.js" defer></script>
+</body>
+</html>
