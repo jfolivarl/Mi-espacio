@@ -1,6 +1,6 @@
-const CACHE = 'mi-espacio-v200';
+const CACHE = 'mi-espacio-v204';
 const ARCHIVOS = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest',
-  'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+  'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'logo-96.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ARCHIVOS)));
