@@ -1145,7 +1145,7 @@ function adjLeer(f,cb){
 /* Visor de adjuntos dentro de la app (no depende de ventanas emergentes, que iOS bloquea) */
 var visUrl=null,visPrev=null,visTok=0,pdfLib=null;
 /* Lector de PDF (pdf.js, Apache-2.0) que se carga solo al abrir un PDF; si falla, se usa el visor del navegador */
-function vendUrl(n){var ss=document.getElementsByTagName('script'),i,m;for(i=0;i<ss.length;i++){m=/^(.*\/)?app\.js(\?.*)?$/.exec(ss[i].getAttribute('src')||'');if(m)return new URL((m[1]||'')+n,location.href).href}return new URL(''+n,location.href).href}
+function vendUrl(n){var ss=document.getElementsByTagName('script'),i,m;for(i=0;i<ss.length;i++){m=/^(.*\/)?app\.js(\?.*)?$/.exec(ss[i].getAttribute('src')||'');if(m)return new URL((m[1]||'')+n,location.href).href}return new URL('js/'+n,location.href).href}
 function pdfCarga(){
   if(pdfLib)return Promise.resolve(pdfLib);
   var imp=new Function('u','return import(u)');

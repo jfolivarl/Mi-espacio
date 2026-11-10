@@ -1,4 +1,4 @@
-const CACHE = 'mi-espacio-v223';
+const CACHE = 'mi-espacio-v224';
 const ARCHIVOS = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest',
   'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'logo-96.png'];
 

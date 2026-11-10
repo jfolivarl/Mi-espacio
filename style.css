@@ -1472,3 +1472,13 @@ button.vdates:active{opacity:.8}
 .mnav.cnav select{min-width:0;font-size:.9rem;text-overflow:ellipsis}
 @media (max-width:360px){.mnav.cnav select{font-size:.82rem}.mnav.cnav{gap:.3rem}}
 .edr{flex-wrap:wrap;gap:.6rem}.edr #ed_t{flex:1 1 100%}.edr .edh{flex:1 1 8rem;min-width:0}
+
+/* Leyendas: todos los elementos con la misma caja, para que alineen */
+.leyenda>*,#a-cal .leyenda>*{display:inline-flex;align-items:center;gap:.4rem;min-height:30px;padding:.2rem .6rem;border:1px solid transparent;border-radius:999px;font:inherit;font-size:.78rem;line-height:1.1;white-space:nowrap;min-width:0}
+.leyenda i,.leyenda .lst{flex:none;width:.85rem;height:.85rem;margin:0;vertical-align:baseline}
+.leyenda i.lr,.leyenda i.lw{border-radius:50%}
+#a-cal .leyenda{grid-template-columns:repeat(auto-fit,minmax(7.6rem,1fr));gap:.3rem .4rem;justify-items:stretch}
+.lgb.on{border-color:var(--turq)}
+.lg div{display:grid;grid-template-columns:auto minmax(0,1fr) auto 3rem;align-items:center;column-gap:.5rem}
+.lg div>b{grid-column:3}
+.lg div>small{grid-column:4}
